@@ -28,7 +28,7 @@ seqNames = list(FastaDict.keys())
 #print(seqNames)
 #print(seq)
 
-def Translate(seq):
+def Translate(seq):  #MUDAR O NOME
         change1 = seq.replace('A', 'u')
         change2 = change1.replace('C', 'g')
         change3 = change2.replace('T', 'a')
@@ -79,7 +79,7 @@ for i in range(1, lenght+1):
 	frameName2.append(names)
 frameName.append(frameName1)
 frameName.append(frameName2)
-
+#print(frameName)
 dictFrame = {}
 #------------------------------------
 
@@ -87,18 +87,91 @@ teste = Seq_Frame[1][1]
 #print(teste)
 
 def maxORF(teste):
-	ORFmax = max(re.findall(r'AUG(?:(?!UAA|UAG|UGA)...)*(?:UAA|UAG|UGA)',teste), key = len)
+	ORFmax = re.findall(r'AUG(?:(?!UAA|UAG|UGA)...)*(?:UAA|UAG|UGA)',teste)
 	return ORFmax
 
+seqFrame2 = [val for sublist in Seq_Frame for val in sublist]
+#print(seqFrame2)
 #print(maxORF(teste))
 
+seq_interesse = re.compile(r'AUG(?:(?!UAA|UAG|UGA)...)*(?:UAA|UAG|UGA)')
+
 ORFs = []
-for i in Seq_Frame:
-	for a in i:
-		if 'AUG' in a:
-			ORF = maxORF(a)
-			ORFs.append(ORF)
-		else:
-			result = 'NONE'
-			ORFs.append(results)
-print(ORFs)
+value = 0
+for i in seqFrame2:
+	seq_int = seq_interesse.findall(seqFrame2[value])
+	value += 1
+	ORFs.append(seq_int)
+#print(ORFs)
+
+ORFsGene1 = ORFs[0:6]  #TENTAR TRANSFORMAR NUM LOOP
+ORFsGene1_ = [valores for sublista in ORFsGene1 for valores in sublista]
+ORFsGene2 = ORFs[6:12]
+ORFsGene2_ = [valores for sublist in ORFsGene2 for valores in sublist]
+
+value = 0
+lenght1 = []
+for i in ORFsGene1_:
+	seq = (i.replace(' ','')) 
+	lenght = (len(seq))
+	lenght1.append(lenght)
+
+value = 0
+lenght2 = []
+for i in ORFsGene2_:
+	seq = (i.replace(' ', ''))
+	lenght = (len(seq))
+	lenght2.append(lenght)
+
+lenghtMaxORF = []
+lenghtMaxORF.append(max(lenght1))
+lenghtMaxORF.append(max(lenght2))
+#print(type(lenghtMaxORF[0]))
+
+index1 = lenght1.index(lenghtMaxORF[0])
+index2 = lenght2.index(lenghtMaxORF[1])
+
+maxORFs = []
+maxORFs.append(ORFsGene1_[index1])
+maxORFs.append(ORFsGene2_[index2])
+#print(maxORFs)
+
+#QUESTÃO 2.3
+
+Peptideos = {"UUU":"F", "UUC": "F", "UUA":"L", "UUG":"L",
+             "UCU":"S", "UCC":"s", "UCA":"S", "UCG":"S",
+             "UAU":"Y", "UAC":"Y", "UAA":"STOP", "UAG":"STOP",
+             "UGU":"C", "UGC":"C", "UGA":"STOP", "UGG":"W",
+       	     "CUU":"L", "CUC":"L", "CUA":"L", "CUG":"L",
+             "CCU":"P", "CCC":"P", "CCA":"P", "CCG":"P",
+             "CAU":"H", "CAC":"H", "CAA":"Q", "CAG":"Q",
+             "CGU":"R", "CGC":"R", "CGA":"R", "CGG":"R",
+             "AUU":"I", "AUC":"I", "AUA":"I", "AUG":"M",
+             "ACU":"T", "ACC":"T", "ACA":"T", "ACG":"T",
+             "AAU":"N", "AAC":"N", "AAA":"K", "AAG":"K",
+             "AGU":"S", "AGC":"S", "AGA":"R", "AGG":"R",
+             "GUU":"V", "GUC":"V", "GUA":"V", "GUG":"V",
+             "GCU":"A", "GCC":"A", "GCA":"A", "GCG":"A",
+             "GAU":"D", "GAC":"D", "GAA":"E", "GAG":"E",
+             "GGU":"G", "GGC":"G", "GGA":"G", "GGG":"G",}
+
+maxORFs_ = []
+for i in maxORFs:
+	seq = i.replace(' ','')
+	maxORFs_.append(seq)
+
+def Translate2(ORF, genetic_code):
+	protein = ''
+	for i in range(0, len(ORF), 3):
+		codon = ORF[i:i+3]
+		protein += genetic_code[codon]
+	return protein
+
+Sera = maxORFs_[0]
+print(Translate2(Sera, Peptideos))
+	
+
+
+
+
+
