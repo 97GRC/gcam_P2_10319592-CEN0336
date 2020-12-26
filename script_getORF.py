@@ -28,8 +28,8 @@ with open(File,'r') as fasta_file:
 
 seq = [FastaDict[i] for i in FastaDict]
 seqNames = list(FastaDict.keys())
-#print(seqNames)
-#print(seq)
+#print(len(seqNames))
+#print(len(seq))
 
 def Transcription(seq):  
         change1 = seq.replace('A', 'u')
@@ -59,7 +59,7 @@ def Frames(seq):
 	Frame6 = ' '.join(codon6)
 	Frames = [Frame1, Frame2, Frame3, Frame4, Frame5, Frame6]
 	Codons = [codon1, codon2, codon3, codon4, codon5, codon6]
-	return Frames 
+	return Frames
 
 value = 0
 Seq_Frame = []
@@ -67,7 +67,7 @@ for i in seq_t:
         frame = Frames(seq_t[value])
         value += 1
         Seq_Frame.append(frame)
-#print(Seq_Frame)
+#print(len(Seq_Frame))
 
 seqFrame2 = [val for sublist in Seq_Frame for val in sublist]
 #print(seqFrame2)
@@ -80,25 +80,22 @@ for i in seqFrame2:
 	seq_int = seq_interesse.findall(seqFrame2[value])
 	value += 1
 	ORFs.append(seq_int)
-#print(ORFs)
+print(ORFs)
 
 for i in ORFs:
 	if not i:
 		i.append('NONE')
 
-
 cut1 = [i for i in range(0, len(ORFs), 6)]
 cut2 = [i for i in range(6, len(ORFs)+1, 6)]
 cuts = list(zip(cut1, cut2))
 #print(cuts)
-#print(cut2)
 
 genesORFs = [ORFs[s:e] for s, e in cuts]
 #print(genesORFs)
 
 dictFrameORF = dict(zip(seqNames, genesORFs))
 #print(dictFrameORF)
-
 
 ORFgenes = []
 for i in dictFrameORF:
@@ -110,8 +107,17 @@ for i in dictFrameORF:
 dictORFs = dict(zip(seqNames, ORFgenes))
 #print(dictORFs)
 
-
 def maxLenght(ORFlist):
+	lenght = []
+	for i in range(0, len(ORFlist)):
+		seq = ORFlist[i]
+		size = len(seq)
+		lenght.append(size)
+		index = lenght.index(max(lenght))
+		maxL = ORFlist[index]
+	return (len(maxL), maxL)
+
+def maxORF(ORFlist):
 	lenght = []
 	for i in range(0, len(ORFlist)):
 		seq = ORFlist[i]
@@ -121,22 +127,34 @@ def maxLenght(ORFlist):
 	return ORFlist[index]
  
 teste3 = (ORFgenes[0])
-#print(len(maxLenght(teste3)))
-#print(len(ORFgenes[1]))
+#print(teste3)
+#print(maxLenght(teste3))
 
-maxORFs = []
+maxORFlenght = []
 for i in dictORFs:
 	orfs = dictORFs[i]
 	maxseq = maxLenght(orfs)
-	maxORFs.append(maxseq)
-#print(len(maxORFs[0]))
+	maxORFlenght.append(maxseq)
+#print(maxORFlenght)
+
+dictmaxORFs = dict(zip(seqNames, maxORFlenght))
+#print(dictmaxORFs)
+
+OnlyORFs = []
+for i in dictORFs:
+	orfs = dictORFs[i]
+	maxseq = maxORF(orfs)
+	OnlyORFs.append(maxseq)
+#print(OnlyORFs)
+
+
 
 #QUESTÃO 2.3 ------------------------------------------------------------------
 
 geneticCode = {"UUU":"F", "UUC": "F", "UUA":"L", "UUG":"L",
-             "UCU":"S", "UCC":"s", "UCA":"S", "UCG":"S",
-             "UAU":"Y", "UAC":"Y", "UAA":"STOP", "UAG":"STOP",
-             "UGU":"C", "UGC":"C", "UGA":"STOP", "UGG":"W",
+             "UCU":"S", "UCC":"S", "UCA":"S", "UCG":"S",
+             "UAU":"Y", "UAC":"Y", "UAA":"stop", "UAG":"stop",
+             "UGU":"C", "UGC":"C", "UGA":"stop", "UGG":"W",
        	     "CUU":"L", "CUC":"L", "CUA":"L", "CUG":"L",
              "CCU":"P", "CCC":"P", "CCA":"P", "CCG":"P",
              "CAU":"H", "CAC":"H", "CAA":"Q", "CAG":"Q",
@@ -152,25 +170,9 @@ geneticCode = {"UUU":"F", "UUC": "F", "UUA":"L", "UUG":"L",
 
 
 maxORFs_ = []
-for i in maxORFs:
+for i in OnlyORFs:
 	seq = i.replace(' ','')
 	maxORFs_.append(seq)
-
-remover = 'NONE'
-while remover in maxORFs_:
-	maxORFs_.remove(remover)
-print(maxORFs_)
-#print(maxORFs_[102])
-
-# ------------------------Verificando se é miltiplo de 3
-a = [len(i) for i in maxORFs_]
-#print(a)
-
-for i in a:
-	if not(i%3):
-		print('S')
-	else:
-		print(a.index(i))
 
 def Translate(ORF, genetic_code):
 	protein = ''
@@ -186,7 +188,5 @@ for i in maxORFs_:
 print(Proteins)
 	
 
-#QUESTÃO 2.4 ------------------------------------------------------------------
-
-
+#QUESTÃO 2.4 ---------------------
 
