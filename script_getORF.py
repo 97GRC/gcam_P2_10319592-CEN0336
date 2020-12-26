@@ -148,24 +148,29 @@ geneticCode = {"UUU":"F", "UUC": "F", "UUA":"L", "UUG":"L",
              "GUU":"V", "GUC":"V", "GUA":"V", "GUG":"V",
              "GCU":"A", "GCC":"A", "GCA":"A", "GCG":"A",
              "GAU":"D", "GAC":"D", "GAA":"E", "GAG":"E",
-             "GGU":"G", "GGC":"G", "GGA":"G", "GGG":"G", 'NONE':'-'}
+             "GGU":"G", "GGC":"G", "GGA":"G", "GGG":"G",}
+
 
 maxORFs_ = []
 for i in maxORFs:
 	seq = i.replace(' ','')
 	maxORFs_.append(seq)
 
+remover = 'NONE'
+while remover in maxORFs_:
+	maxORFs_.remove(remover)
+print(maxORFs_)
 #print(maxORFs_[102])
 
 # ------------------------Verificando se é miltiplo de 3
 a = [len(i) for i in maxORFs_]
 #print(a)
 
-#for i in a:
-#	if not(i%3):
-#		print('S')
-#	else:
-#		print(a.index(i))
+for i in a:
+	if not(i%3):
+		print('S')
+	else:
+		print(a.index(i))
 
 def Translate(ORF, genetic_code):
 	protein = ''
